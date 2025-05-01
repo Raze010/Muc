@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    
+    <div id="flexDiv">
+        <h1>Bienvenue {{nom}}!</h1>
+        <br>
+        <h1 id="GrosseFluctuation"/>
+
+        <script>
+            CreerTexteArgent("GrosseFluctuation", {{ sommeTotale }},54);
+        </script>      
+    </div>  
+
+{% endblock %}

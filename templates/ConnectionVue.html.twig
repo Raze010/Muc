@@ -1,15 +1,44 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="../style/Tout.css" /> 
-{% endblock %}
-
-{% block title %}{{ 'Muc' }}{% endblock %}
-
 {% block body %}
+    
+    <div class="flexDiv">
+        <div>
+            <h1>Muc</h1>
+            <a>Nom :</a>
+            <input type="text" id="monInput" value="{{ nom_utilisateur }}">
 
-    <div max-width:fit-content>
-        <h1>feur</h1>
+            <div class="DivBoutonConnection">
+                <button onClick="Connection()">Se connecter</button>
+            </div>
+        </div>
     </div>
+
+<script>
+    function Connection() {
+        const nom = document.getElementById('monInput').value;
+
+        const chemin = '{{ path('update_nom') }}';
+
+        fetch(chemin, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'nom': nom
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '{{ path('bienvenue') }}'; 
+            } else {
+                alert(data.message);
+            }            
+        });
+
+    }
+</script>
 
 {% endblock %}

@@ -1,0 +1,54 @@
+.flexDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body{
+    background-color: black;
+}
+
+h1, h2, text {
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+    color: white;
+}
+
+a {
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    color:white;
+}
+
+.DivBoutonConnection {    
+    margin-top: 20px;
+    display: grid;
+    place-items: center;
+}
+
+.Neutre, .Benefice, .Perte {
+    font-family: 'Arial', sans-serif;
+}
+
+.Neutre { 
+    color: grey;
+}
+
+.Neutre:hover {
+    color: white;
+}
+
+.Benefice {
+    color: green;
+}
+
+.Benefice:hover{
+    color: lightgreen;
+}
+
+.Perte {
+    color: darkred;
+}
+
+.Perte:hover {
+    color: red;
+}
