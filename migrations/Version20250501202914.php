@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250501084607 extends AbstractMigration
+final class Version20250501202914 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -27,7 +27,7 @@ final class Version20250501084607 extends AbstractMigration
             CREATE TABLE utilisateur (id INT AUTO_INCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE vente (id INT AUTO_INCREMENT NOT NULL, gppourcentage DOUBLE PRECISION NOT NULL, somme_totale DOUBLE PRECISION NOT NULL, date_vente DATETIME NOT NULL, idCours INT DEFAULT NULL, idUtilisateur INT DEFAULT NULL, INDEX IDX_888A2A4CEA0ECF81 (idCours), INDEX IDX_888A2A4C5D419CCB (idUtilisateur), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
+            CREATE TABLE vente (id INT AUTO_INCREMENT NOT NULL, somme_investis DOUBLE PRECISION NOT NULL, prix_cours_achat DOUBLE PRECISION NOT NULL, date_achat DATETIME NOT NULL, prix_cours_vente DOUBLE PRECISION NOT NULL, date_vente DATETIME NOT NULL, effet_levier INT NOT NULL, id_transaction VARCHAR(255) NOT NULL, est_un_short TINYINT(1) NOT NULL, gp DOUBLE PRECISION NOT NULL, idCours INT DEFAULT NULL, idUtilisateur INT DEFAULT NULL, INDEX IDX_888A2A4CEA0ECF81 (idCours), INDEX IDX_888A2A4C5D419CCB (idUtilisateur), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
             ALTER TABLE vente ADD CONSTRAINT FK_888A2A4CEA0ECF81 FOREIGN KEY (idCours) REFERENCES cours (id)

@@ -17,7 +17,7 @@ class Vente
     #[ORM\ManyToOne(targetEntity: Cours::class)]
     #[ORM\JoinColumn(name: "idCours", referencedColumnName: "id")]
     private ?Cours $cours = null;
-    
+
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
     #[ORM\JoinColumn(name: "idUtilisateur", referencedColumnName: "id")]
     private ?Utilisateur $utilisateur = null;
@@ -39,6 +39,39 @@ class Vente
 
     #[ORM\Column]
     private ?int $EffetLevier = null;
+
+    #[ORM\Column]
+    private ?string $idTransaction;
+
+    #[ORM\Column]
+    private ?bool $EstUnShort;
+
+    #[ORM\Column]
+    private ?float $GP = null;
+
+    public function getGP() {
+        return $this->GP;
+    }
+
+    public function setGP($GP){
+        $this->GP = $GP;
+    }
+
+    public function getEstUnShort(){
+        return $this->EstUnShort;
+    }
+
+    public function setEstUnShort($EstUnShort){
+        $this->EstUnShort = $EstUnShort;
+    }
+
+    public function getIdTransaction () {
+        return $this->idTransaction;
+    }
+
+    public function setIdTransaction ($idTransaction) {
+        $this->idTransaction = $idTransaction;
+    }
 
     public function getId(): ?int
     {
@@ -69,6 +102,18 @@ class Vente
         return $this;
     }
 
+    public function getPrixAchat(): ?float
+    {
+        return $this->PrixCoursAchat;
+    }
+
+    public function setPrixAchat(float $prixAchat): static
+    {
+        $this->PrixCoursAchat = $prixAchat;
+
+        return $this;
+    }
+
     public function getDateVente(): ?\DateTimeInterface
     {
         return $this->DateVente;
@@ -79,5 +124,45 @@ class Vente
         $this->DateVente = $DateVente;
 
         return $this;
+    }
+
+    public function getPrixVente(): ?float
+    {
+        return $this->PrixCoursVente;
+    }
+
+    public function setPrixVente(float $prixVente): static
+    {
+        $this->PrixCoursVente = $prixVente;
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur($utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    public function getCours(){
+        return $this->cours;
+    }
+
+    public function setCours($cours){
+        $this->cours = $cours;
+    }
+
+    public function getEffetLevier (){
+        return $this->EffetLevier;
+    }
+
+    public function setEffetLevier ($effetLevier){
+        $this->EffetLevier = $effetLevier;
     }
 }

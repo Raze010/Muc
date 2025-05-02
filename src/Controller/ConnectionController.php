@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Calcul\Calcul;
+use App\Back;
+use App\Back\LectureTransactionEtoro;
 use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Helper\Helper;
@@ -20,9 +21,8 @@ use App\Repository;
 class ConnectionController extends AbstractController {
 
     #[Route('/', name: 'connection_index', methods: ['GET'])]
-    public function index (Request $request): Response
+    public function index (Request $request,ManagerRegistry $registry): Response
     {   
-
         return $this->render('ConnectionVue.html.twig', [
             'nom_utilisateur'=>''
          ]);

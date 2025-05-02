@@ -20,4 +20,12 @@ class VenteRepository extends ServiceEntityRepository
     {
       return $this->findBy(['utilisateur' => $utilisateur]);
     }
+    
+    public function addVente($Vente): Vente
+    {
+        $this->getEntityManager()->persist($Vente);
+        $this->getEntityManager()->flush();
+    
+        return $Vente;
+    }
 }

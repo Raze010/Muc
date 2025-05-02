@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Calcul;
+namespace App\Back;
 
 use App\MISC\PHPHelper;
 
 class Calcul {
 
-    public static function ObtenirSommeTotale ($listeVente) {
+    public static function getGpTotale ($listeVente) {
         $sommeTotale = 0;
 
         for($i = 0; $i < count($listeVente); $i++){
-            $sommeTotale += $listeVente[$i]->getSommeTotale();
+            $sommeTotale += $listeVente[$i]->getGP();
         }
 
         return $sommeTotale;

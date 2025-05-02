@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Calcul\Calcul;
+use App\Back\Calcul;
+use App\Back\LectureTransactionEtoro;
 use App\Entity\Vente;
 use App\Repository\VenteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,11 +23,13 @@ class BienvenueController extends AbstractController {
     {   
         $utilisateur = $session->get('utilisateur',);
 
+        LectureTransactionEtoro::Lire('..\src\documents\ReleverEtoro.xlsx', $utilisateur, $doctrine);
+
         $repository = $doctrine->getRepository(Vente::class);
 
         $listeVente = $repository->TrouverVente($utilisateur);
 
-        $sommeTotale = Calcul::ObtenirSommeTotale($listeVente);
+        $sommeTotale = Calcul::getGpTotale($listeVente);
             
         return $this->render('Bienvenue.html.twig', [
             'nom'=>$utilisateur->getNom(),
