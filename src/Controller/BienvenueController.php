@@ -69,16 +69,24 @@ class BienvenueController extends AbstractController {
     }
 
     #[Route('/GrapheGeneral', name: 'GrapheGeneral')]
-    public function imageDynamique(Request $request): Response
+    public function imageDynamique(Request $request, SessionInterface $session, ManagerRegistry $doctrine): Response
     {
+        $utilisateur = $session->get('utilisateur',);
+
+        $repository = $doctrine->getRepository(Vente::class);
+
+        $listeVente = $repository->TrouverVente($utilisateur);
+
         $gen = new GenGraphique();
+
+        $gen->remplirDonnee_vente($listeVente);
 
         $width = (int) $request->query->get('width',  1000);   // Valeur par défaut : 500
         $height = (int) $request->query->get('height', 1000); // Valeur par défaut : 100
     
         // Capture le rendu de l'image dans un buffer
         ob_start(); // Démarrer le buffer de sortie
-        $gen->generer($width,$height);
+        $gen->generer($width,$height,0,0,0,0);
         $imageData = ob_get_clean();
 
         return new Response($imageData, 200, [
