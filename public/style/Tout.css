@@ -52,3 +52,80 @@ a {
 .Perte:hover {
     color: red;
 }
+
+.message_vert {
+    color: green;
+}
+
+.message_rouge {
+    color: darkred;
+}
+
+.listeVenteScrollbar {
+    overflow-y: auto;
+    max-height: 70vh;
+    margin: 10px;
+}
+
+.vente_div {
+    display: flex;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 1px;
+    border-color: white;
+    margin-bottom: 10px;
+    padding: 5px;
+    position: relative;
+    width: 200px;
+    height: 50px;
+    gap :10px;
+}
+
+.vente_cours_surnom {
+    font-size: 12px;
+}
+
+.vente_dateVente {
+    font-size: 12px;
+}
+
+.vente_gp {
+    position: absolute;
+}
+
+.vente_div {
+    display: inline-block;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 1px;
+    border-color: white;
+    margin-bottom: 10px;
+    padding: 5px;
+    position: relative;
+    width: 200px;
+    height: 50px;
+    gap :10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.vente_cours_surnom {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-weight: bold;
+}
+
+.vente_gp {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    font-size: 14px;
+}
+
+.vente_dateVente {
+    position: absolute;
+    bottom: 2px;
+    right: 3px;
+    font-size: 12px;
+}

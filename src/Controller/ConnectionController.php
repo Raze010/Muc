@@ -60,4 +60,6 @@ class ConnectionController extends AbstractController {
         // Vérifier si un utilisateur a été trouvé
         return $utilisateur;
     }
+
+    
 }

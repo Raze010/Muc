@@ -1,44 +1,42 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    
-    <div class="flexDiv">
-        <div>
-            <h1>Muc</h1>
-            <a>Nom :</a>
-            <input type="text" id="monInput" value="{{ nom_utilisateur }}">
 
-            <div class="DivBoutonConnection">
-                <button onClick="Connection()">Se connecter</button>
-            </div>
-        </div>
-    </div>
+	<div class="flexDiv">
+		<div>
+			<h1>Muc</h1>
+			<a>Nom :</a>
+			<input type="text" id="monInput" value="{{ nom_utilisateur }}">
 
-<script>
-    function Connection() {
-        const nom = document.getElementById('monInput').value;
+			<div class="DivBoutonConnection">
+				<button onclick="Connection()">Se connecter</button>
+			</div>
+		</div>
+	</div>
 
-        const chemin = '{{ path('update_nom') }}';
+	<script>
+		function Connection() {
+            const nom = document.getElementById('monInput').value;
 
-        fetch(chemin, {
+            const chemin = '{{ path('update_nom') }}';
+
+            fetch(chemin, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: new URLSearchParams({
-                'nom': nom
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
+            body: new URLSearchParams(
+            {'nom': nom}
+            )
+            }).then(response => response.json()).then(data => {
             if (data.success) {
-                window.location.href = '{{ path('bienvenue') }}'; 
+            window.location.href = '{{ path('bienvenue') }}';
             } else {
-                alert(data.message);
-            }            
-        });
+            alert(data.message);
+            }
+            });
 
-    }
-</script>
+            }
+	</script>
 
 {% endblock %}

@@ -17,6 +17,9 @@ class Cours
     #[ORM\Column(length: 255)]
     private ?string $Nom = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $Surnom = null;
+
     #[ORM\Column(type: Types::BLOB, nullable: true)]
     private $Image;
 
@@ -40,6 +43,18 @@ class Cours
     public function setNom(string $Nom): static
     {
         $this->Nom = $Nom;
+
+        return $this;
+    }
+
+    public function getSurnom(): ?string
+    {
+        return $this->Surnom;
+    }
+
+    public function setSurnom(string $Surnom): static
+    {
+        $this->Surnom = $Surnom;
 
         return $this;
     }

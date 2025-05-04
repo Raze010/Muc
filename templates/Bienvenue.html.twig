@@ -1,15 +1,54 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    
-    <div id="flexDiv">
-        <h1>Bienvenue {{nom}}!</h1>
-        <br>
-        <h1 id="GrosseFluctuation"/>
+	<div id="flexDiv">
+		<h2 class="{{sousMessageClasse}}" onclick="window.location.href='{{ path('ReinitMessageBvn') }}'">{{sousMessage}}</h2>
 
-        <script>
-            CreerTexteArgent("GrosseFluctuation", {{ sommeTotale }},54);
-        </script>      
-    </div>  
+		<h1 id="GrosseFluctuation"/>
+
+		<script>
+			CreerTexteArgent("GrosseFluctuation", {{ sommeTotale }}, 54);
+		</script>
+
+		<img id="grapheImage" alt="Image dynamique"/>
+		<script>
+			window.addEventListener('DOMContentLoaded', () => {
+				const width = window.innerWidth * 0.9;
+				const height = window.innerHeight * 0.4;
+
+				const imageUrl = `/GrapheGeneral?width=${width}&height=${height}`;
+				document.getElementById('grapheImage').src = imageUrl;
+			});
+		</script>
+
+		<div class='listeVenteScrollbar'>
+			{% for vente in listeVente %}
+				<div class='vente_div'>
+					<span class='vente_cours_surnom'>
+						{{vente.getCours.getSurnom}}
+					</span>
+
+					<span id='{{ vente.getIdTransaction }}' class='vente_gp'></span>
+
+					<span class='vente_dateVente'>{{ vente.getDateVente|date('d/m/Y') }}</span>
+
+					<script>
+						CreerTexteArgent('{{ vente.getIdTransaction }}', {{ vente.getGP }}, 20);
+					</script>
+				</div>
+				<br>
+			{% endfor %}
+		</div>
+
+		<div>
+			<form id="etoroForm" action="{{ path('importerTransactionEtoro') }}" method="post" enctype="multipart/form-data" style="display: none;">
+				<input type="file" name="fichier_etoro" id="fichierEtoroInput" onchange="document.getElementById('etoroForm').submit();">
+			</form>
+
+			<button type="button" onclick="document.getElementById('fichierEtoroInput').click();">
+				Importer de nouvelles transactions eToro
+			</button>
+		</div>
+	</div>
 
 {% endblock %}

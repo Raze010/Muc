@@ -50,7 +50,7 @@ class Vente
     private ?float $GP = null;
 
     public function getGP() {
-        return $this->GP;
+        return round($this->GP,2);
     }
 
     public function setGP($GP){

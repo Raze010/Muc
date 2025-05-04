@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Vente;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Mapping\OrderBy;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -18,7 +19,10 @@ class VenteRepository extends ServiceEntityRepository
 
     public function TrouverVente($utilisateur)
     {
-      return $this->findBy(['utilisateur' => $utilisateur]);
+      return $this->findBy(
+        ['utilisateur' => $utilisateur],
+        ['DateVente' =>'DESC']
+    );
     }
     
     public function addVente($Vente): Vente
