@@ -16,6 +16,9 @@ class Utilisateur
     #[ORM\Column(length: 255)]
     private ?string $Nom = null;
 
+    #[ORM\Column(length: 255)]
+    private ?float $Frais = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -31,5 +34,9 @@ class Utilisateur
         $this->Nom = $Nom;
 
         return $this;
+    }
+
+    public function getFrais (){
+        return $this->Frais;
     }
 }

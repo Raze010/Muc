@@ -21,6 +21,10 @@ class CoursRepository extends ServiceEntityRepository
         return $this->findAll();
     }
 
+    public function getFromId ($id) {
+        return $this->find($id);
+    }
+
     public function addCours($cours): Cours
     {
         $this->getEntityManager()->persist($cours);

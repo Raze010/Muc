@@ -10,6 +10,13 @@
     align-items: center;
 }
 
+.flexDivImage_old {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scale: 0.5;
+}
+
 body{
     background-color: black;
 }
@@ -23,6 +30,10 @@ h1, h2, text {
 a {
     font-family:Verdana, Geneva, Tahoma, sans-serif;
     color:white;
+}
+
+.sousMessageFraisSup {
+    color: white;
 }
 
 .DivBoutonConnection {    
@@ -69,7 +80,7 @@ a {
 
 .listeVenteScrollbar {
     overflow-y: auto;
-    max-height: 55vh;
+    max-height: 50vh;
     margin: 10px;
     padding: 10px;
 }
@@ -120,7 +131,7 @@ a {
     color: white;
     position: absolute;
     top: 5px;
-    left: 5px;
+    left: 30px;
     font-weight: bold;
 }
 
@@ -139,10 +150,19 @@ a {
     font-size: 12px;
 }
 
-.grapheImage {
-    width: 100%;
-    height: 100%;
-    border-color: white;
-    border: 1px solid white;
-    border-radius: 1px;
+.GrapheImage {
+    width: 60%;
+    height: 30%;
+}
+
+.radioLabel {
+    color: white;
+}
+
+.vente_effetLevier {
+    color: white;
+    position: absolute;
+    bottom: 0;
+    left: 5px;
+    font-size: 14px;
 }

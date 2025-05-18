@@ -1,17 +1,49 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+		<link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+		
 		<h2 class="{{sousMessageClasse}}" onclick="window.location.href='{{ path('ReinitMessageBvn') }}'">{{sousMessage}}</h2>
 
 		<h1 id="GrosseFluctuation"></h1>
-
 		<script>
 			CreerTexteArgent("GrosseFluctuation", {{ sommeTotale }}, 54);
 		</script>
 
+		{# <div class='flexDivImage_old'>
+			<img id="grapheImage" alt="Image dynamique" class="GrapheImage"></img>
+		</div> #}
+
 		<div class='flexDivImage'>
-			<img id="grapheImage" alt="Image dynamique" class="grapheImage"></img>
+			<canvas id="grapheJS" class="GrapheImage"></canvas>
 		</div>
+		
+		<script>
+
+		</script>
+
+
+		<br>
+		<div class='flexDivImage'>
+			<select name="modeAffichage" id='modeAffichageSelect' onchange="RechargerPage()">
+				<option value="transaction">Par transaction</option>
+				<option value="jour">Par jour</option>
+				<option value="semaine">Par semaine</option>
+				<option value="mois">Par mois</option>
+				<option value="an">Par an</option>
+			</select>
+		</div>
+
+		<br>
+		<div class='flexDivImage'>
+			
+		<input id="radio_reel" type="radio" name="modeDate" value="reel" onclick="RechargerPage()"/>
+			<label for="radio_reel" class='radioLabel'>Reel</label>
+
+			<input id="radio_distinct" type="radio" name="modeDate" value="distinct" onclick="RechargerPage()"/>
+			<label for="radio_distinct" class='radioLabel'>Distinct</label>
+		</div>
+
 		<script>
 			window.addEventListener('DOMContentLoaded', () => {
 				const scale = 1 / 0.5;
@@ -19,20 +51,55 @@
 				const width = window.innerWidth * 0.9 * scale;
 				const height = window.innerHeight * 0.3 * scale;
 
-				const imageUrl = `/GrapheGeneral?width=${width}&height=${height}`;
-				document.getElementById('grapheImage').src = imageUrl;
+				const urlParams = new URLSearchParams(window.location.search);
+				const modeDate = urlParams.get('modeDate') || 'reel'; // Valeur par défaut : 'reel'
+				const modeAffichage = urlParams.get('modeAffichage') || 'transaction'; // Valeur par défaut : 'reel'
+				
+				window.modeAffichage = modeDate;
+
+				const radio = document.querySelector(`input[name="modeDate"][value="${modeDate}"]`);
+				if (radio) {
+					radio.checked = true;
+				}
+
+				document.getElementById('modeAffichageSelect').value = modeAffichage;
+
+				//const imageUrl = `/GrapheGeneral?width=${width}&height=${height}&modeDate=${modeDate}&modeAffichage=${modeAffichage}`;
+				//document.getElementById('grapheImage').src = imageUrl;
 			});
+			window.listeVente = {{ listeVenteJS|json_encode|raw }}
+
+			function RechargerPage () {
+				const modeAffichageSelect = document.getElementById('modeAffichageSelect').value;
+				let modeDateRadio = "reel";
+
+				const radios = document.getElementsByName("modeDate");
+				for (let i = 0; i < radios.length; i++) {
+					if (radios[i].checked) {
+						modeDateRadio = radios[i].value;
+						break;
+					}
+				}
+
+
+				window.location.href=`?modeDate=${modeDateRadio}&modeAffichage=${modeAffichageSelect}`;
+			}
 		</script>
+		<script type="module" src="{{ asset('js/GraphiqueJS/Graphique_controleur.js') }}"></script>
 
 		<div class='flexDiv'>
 			<div class='listeVenteScrollbar'>
 				{% for vente in listeVente %}
 					<div class='vente_div'>
+    					<img style="max-width:20px; max-height:20px;" src="{{ path('imageCours', { id: vente.getCours.getId }) }}" >
 						<span class='vente_cours_surnom'>
 							{{vente.getCours.getSurnom}}
 						</span>
-
 						<span id='{{ vente.getIdTransaction }}' class='vente_gp'></span>
+
+						{% if vente.getEffetLevier > 1 %}
+							<span class='vente_effetLevier'>x{{ vente.getEffetLevier }}</span>
+						{% endif %}
 
 						<span class='vente_dateVente'>{{ vente.getDateVente|date('d/m/Y') }}</span>
 
@@ -44,6 +111,11 @@
 				{% endfor %}
 			</div>
 		</div>
+		
+		<div class="flexDiv">
+			<span class='sousMessageFraisSup'> sans inclure des frais de {{ fraisSup }} $</span>
+		</div>
+		<br>
 		<div class="flexDiv">
 			<form id="etoroForm" action="{{ path('importerTransactionEtoro') }}" method="post" enctype="multipart/form-data" style="display: none;">
 				<input type="file" name="fichier_etoro" id="fichierEtoroInput" onchange="document.getElementById('etoroForm').submit();">
@@ -53,5 +125,4 @@
 				Importer de nouvelles transactions eToro
 			</button>
 		</div>
-
 {% endblock %}
