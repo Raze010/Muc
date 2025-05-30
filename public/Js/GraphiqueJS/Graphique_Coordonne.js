@@ -4,40 +4,57 @@ export function Connecter(_controleur) {
     controleur = _controleur;
 }
 
-export function ObtenirPosXSelonTransaction (vente) {
-    let padding = 20;
+let PixelParPrix_Y = 0;
 
-    let Largeur = controleur.donnee.Largeur - padding;
+export function DefinirCoordonneXYListeVente() {
+    //Selon des coordonne x y NON DILATER
+    const donnee = controleur.donnee;
+
+    const img_largeur = donnee.Largeur;
+    const img_hauteur = donnee.Hauteur;
+
+    const ModeDate = donnee.ModeDate; //reel ou distinct
 
     let premiereTransaction = controleur.donnee.PremiereTransaction;
     let derniereTransaction = controleur.donnee.DerniereTransaction;
 
-    let modeAffichage = controleur.donnee.ModeAffichage;
+    let plusPetitTick = premiereTransaction.date.getTime();
+    let plusGrandTick = derniereTransaction.date.getTime();
 
-    if (modeAffichage == "reel") {
-        console.log("du");
-        let plusPetitTick = premiereTransaction.date.getTime();
-        let plusGrandTick = derniereTransaction.date.getTime();
+    let prixMax = donnee.GPPositifRecord;
+    let prixMin = donnee.GPNegatifRecord;
 
-        let venteTick = vente.date.getTime();
-        console.log("plus petit = " +plusPetitTick +" plus grand = " +plusGrandTick);
+    let PixelParTick_X = img_largeur / (plusGrandTick - plusPetitTick) * controleur.donnee.ScaleX; //CORRECTE
+    PixelParPrix_Y = img_hauteur / (prixMax - prixMin) * controleur.donnee.ScaleY; //CORRECTE
 
-        let x = (venteTick - plusPetitTick) / (plusGrandTick - plusPetitTick) * Largeur;
-    
-        return x + padding / 2;
-    } else if (modeAffichage == "distinct") {
-        return vente.ordre / derniereTransaction.ordre * Largeur + padding / 2;
+    let ListeVente = donnee.ListeVente;
+
+    for (let i = 0; i < ListeVente.length; i++) {
+        let vente = ListeVente[i];
+
+        //X
+        let x = 0;
+
+        if (ModeDate == "reel") {
+            let venteTick = vente.date.getTime();
+
+            x = (venteTick - plusPetitTick) * PixelParTick_X; //CORRECTe
+        } else if (ModeDate == "distinct") {
+            x = vente.ordre / derniereTransaction.ordre * img_largeur * controleur.donnee.ScaleX;
+        }
+
+        ListeVente[i]['graphe_x'] = x + controleur.donnee.DeplacementXPixel;
+
+        //Y
+        ListeVente[i]['graphe_y'] = ObtenirYSelonPrix(ListeVente[i]['gpTotale']);
     }
 }
 
-export function ObtenirPosYSelonPrix (prix) {
-    const padding = 50;
+export function ObtenirPrixSelonY(y) {
+    return (y - controleur.donnee.DeplacementYPixel) / PixelParPrix_Y + controleur.donnee.GPNegatifRecord; //A verifier
 
-    let hauteur = controleur.donnee.Hauteur - padding;
+}
 
-    prix -= controleur.donnee.GPNegatifRecord;
-
-    let pixelParPrix = (controleur.donnee.GPPositifRecord - controleur.donnee.GPNegatifRecord) / hauteur;
-
-    return hauteur - prix / pixelParPrix + padding / 2;
+export function ObtenirYSelonPrix(prix) {
+    return (prix - controleur.donnee.GPNegatifRecord) * PixelParPrix_Y + controleur.donnee.DeplacementYPixel; //A verifier
 }

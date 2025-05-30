@@ -21,7 +21,7 @@ body{
     background-color: black;
 }
 
-h1, h2, text {
+h1, h2, text, span {
     font-family:Verdana, Geneva, Tahoma, sans-serif;
     text-align: center;
     color: white;

@@ -154,7 +154,7 @@ class LectureTransactionEtoro
             $sessionInterface->set('bvn_message',$compteurTransaction . ' nouvelles transactions ajoutés');
         } catch (Exception $e) {
             $sessionInterface->set('bvn_message_couleur','message_rouge');
-            $sessionInterface->set('bvn_message',' une erreur est survenue lors de la lecture du fichier');
+            $sessionInterface->set('bvn_message',' une erreur est survenue lors de la lecture du fichier : ' .$e);
         }
     }
 }

@@ -8,20 +8,68 @@ export let ListeVente = null;
 export let PremiereTransaction = null;
 export let DerniereTransaction = null;
 
-export let ModeAffichage = "reel";
+export let ModeDate = "reel";
+export let ModeAffichage = "transaction";
 
 export let Largeur = 0;
 export let Hauteur = 0;
 
-export let GPPositifRecord = 0;
-export let GPNegatifRecord = 0;
+export function DefinirTaille(largeur, hauteur) {
+    Largeur = largeur;
+    Hauteur = hauteur;
+}
+
+export let GPPositifRecord = -1000000;
+export let GPNegatifRecord = 1000000;
 
 export let VentePositifRecord = null;
 export let VenteNegatifRecord = null;
 
-export function DefinirTaille(largeur, hauteur) {
-    Largeur = largeur;
-    Hauteur = hauteur;
+//#region deplacement graphe
+
+export let DeplacementXPixel = 0;
+export let DeplacementYPixel = 0;
+
+export function DefinirDeplacement(x, y) {
+    DefinirDeplacementPixelX(x);
+    DefinirDeplacementPixelY(y);
+}
+
+export function DefinirDeplacementPixelX(x) {
+    DeplacementXPixel = x;
+}
+
+export function DefinirDeplacementPixelY(y) {
+    DeplacementYPixel = y;
+}
+
+//#endregion
+
+//#region zoom graphe
+
+export let ScaleX = 1;
+export let ScaleY = 1;
+
+export function DefinirScale(x, y) {
+    DefinirScaleX(x);
+    DefinirScaleY(y);
+}
+
+export function DefinirScaleX(x) {
+    ScaleX = x;
+}
+
+export function DefinirScaleY(y) {
+    ScaleY = y;
+}
+
+//#endregion
+
+export function ReinitParametreAffichage() {
+    DeplacementXPixel = 0;
+    DeplacementYPixel = 0;
+    ScaleX = 1;
+    ScaleY = 1;
 }
 
 export function Connecter(_controleur) {
@@ -31,7 +79,7 @@ export function Connecter(_controleur) {
 
     for (let i = 0; i < ListeVente.length; i++) {
         let vente = ListeVente[i];
-        
+
         vente.date = new Date(vente.date);
 
         let gpActu = vente.gpTotale;
@@ -49,12 +97,13 @@ export function Connecter(_controleur) {
     PremiereTransaction = ListeVente[0];
     DerniereTransaction = ListeVente[ListeVente.length - 1];
 
+    ModeDate = window.modeDate;
     ModeAffichage = window.modeAffichage;
 
     document.addEventListener('mousemove', function (event) {
         const rect = controleur.canvas.getBoundingClientRect();
 
         posSourisX = event.clientX - rect.left; // Position horizontale dans la fenêtre
-        posSourisY = event.clientY - rect.top; // Position verticale dans la fenêtre
+        posSourisY = Hauteur - (event.clientY - rect.top); // Position verticale dans la fenêtre
     });
 }
