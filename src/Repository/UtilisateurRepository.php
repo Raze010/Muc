@@ -21,4 +21,15 @@ class UtilisateurRepository extends ServiceEntityRepository
       return $this->findOneBy(['Nom' => $nom]);
     }
 
+    public function TrouverAdresseMail ($adresseMail){
+      return $this->findOneBy(["adresseMail"=>$adresseMail]);
+    }
+
+    public function addUtilisateur($utilisateur): Utilisateur
+    {
+        $this->getEntityManager()->persist($utilisateur);
+        $this->getEntityManager()->flush();
+    
+        return $utilisateur;
+    }
 }

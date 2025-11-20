@@ -16,8 +16,11 @@ class Utilisateur
     #[ORM\Column(length: 255)]
     private ?string $Nom = null;
 
+    #[ORM\Column("adresse_mail",length: 255)]
+    private ?string $adresseMail = null;
+
     #[ORM\Column(length: 255)]
-    private ?float $Frais = null;
+    private ?string $mdp = null;
 
     public function getId(): ?int
     {
@@ -36,7 +39,26 @@ class Utilisateur
         return $this;
     }
 
-    public function getFrais (){
-        return $this->Frais;
+    public function getAdresseMail(): ?string
+    {
+        return $this->adresseMail;
+    }
+
+    public function setAdresseMail(string $adresseMail): static
+    {
+        $this->adresseMail = $adresseMail;
+
+        return $this;
+    }
+
+    public function getMdp(): ?string
+    {
+        return $this->mdp;
+    }
+
+    public function setMdp(string $mdp): static
+    {
+        $this->mdp = password_hash($mdp, PASSWORD_ARGON2ID);
+        return $this;
     }
 }

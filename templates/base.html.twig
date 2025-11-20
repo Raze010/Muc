@@ -1,41 +1,45 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Muc{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        <link rel="stylesheet" type="text/css" href="../style/Tout.css"/> 
-        {% block stylesheets %}
-        {% endblock %}
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Muc
+			{% endblock %}
+		</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+		<link rel="stylesheet" type="text/css" href="../style/Tout.css"/> {% block stylesheets %}{% endblock %}{% block javascripts %}{% endblock %}
+		</head>
+		<body>
+			<div class="footerBar">
+				<button onclick="window.location.href='/rgpd'">Politique de confidentialité</button>
+				<button onclick="window.location.href='/mention'">Mentions légales</button>
+				<button onclick="window.location.href='/contact'">Contact</button>
+			</div>
+			<script>
+				function CreerTexteArgent(idElement, valeur, tailleEnPixel) {
+const span = document.createElement('strong');
+if (valeur == 0) 
+span.className = "Neutre";
+ else if (valeur < 0) 
+span.className = "Perte";
+ else 
+span.className = "Benefice";
 
-        {% block javascripts %}
-        {% endblock %}
-    </head>
-    <body>
-        <script>
-            function CreerTexteArgent(idElement, valeur, tailleEnPixel) {
-                const span = document.createElement('strong');
-                if (valeur == 0)
-                    span.className = "Neutre"; 
-                else if (valeur < 0)
-                    span.className = "Perte";
-                else
-                    span.className = "Benefice";
 
-                txt = '' + valeur;
+txt = '' + valeur;
 
-                txt = txt.replace(/\B(?=(\d{3})+(?!\d))/g, " "); // Ajoute des virgules comme séparateurs de milliers
+txt = txt.replace(/\B(?=(\d{3})+(?!\d))/g, " "); // Ajoute des virgules comme séparateurs de milliers
 
-                txt = txt + " $";
+txt = txt + " $";
 
-                span.textContent = txt;
+span.textContent = txt;
 
-                span.style.fontSize = tailleEnPixel + 'px';
+span.style.fontSize = tailleEnPixel + 'px';
 
-                document.getElementById(idElement).appendChild(span);
-            }
-        </script>
+document.getElementById(idElement).appendChild(span);
+}
+			</script>
 
-        {% block body %}{% endblock %}
-    </body>
-</html>
+			{% block body %}{% endblock %}
+		</body>
+	</html>

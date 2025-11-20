@@ -10,6 +10,7 @@ export let DerniereTransaction = null;
 
 export let ModeDate = "reel";
 export let ModeAffichage = "transaction";
+export let ValeurAffichage = "gpTotale";
 
 export let Largeur = 0;
 export let Hauteur = 0;
@@ -65,6 +66,8 @@ export function DefinirScaleY(y) {
 
 //#endregion
 
+export let ListeTransactionSelectionner;
+
 export function ReinitParametreAffichage() {
     DeplacementXPixel = 0;
     DeplacementYPixel = 0;
@@ -75,14 +78,21 @@ export function ReinitParametreAffichage() {
 export function Connecter(_controleur) {
     controleur = _controleur;
 
+    ModeDate = window.modeDate;
+    ModeAffichage = window.modeAffichage;
+    ValeurAffichage = window.ValeurAffichage;
+
     ListeVente = window.listeVente;
 
     for (let i = 0; i < ListeVente.length; i++) {
         let vente = ListeVente[i];
 
         vente.date = new Date(vente.date);
-
         let gpActu = vente.gpTotale;
+
+        if (ValeurAffichage == 'gp') {
+            gpActu = vente.gp;
+        }
 
         if (GPPositifRecord < gpActu) {
             GPPositifRecord = gpActu;
@@ -97,13 +107,20 @@ export function Connecter(_controleur) {
     PremiereTransaction = ListeVente[0];
     DerniereTransaction = ListeVente[ListeVente.length - 1];
 
-    ModeDate = window.modeDate;
-    ModeAffichage = window.modeAffichage;
-
     document.addEventListener('mousemove', function (event) {
         const rect = controleur.canvas.getBoundingClientRect();
 
         posSourisX = event.clientX - rect.left; // Position horizontale dans la fenêtre
         posSourisY = Hauteur - (event.clientY - rect.top); // Position verticale dans la fenêtre
     });
+    ListeTransactionSelectionner = [];
+    function update() {
+        if (window.ListeTransactionSelectionner == null || ListeTransactionSelectionner == null) {
+            ListeTransactionSelectionner = [];
+        }
+        ListeTransactionSelectionner = window.ListeTransactionSelectionner;
+        requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
 }

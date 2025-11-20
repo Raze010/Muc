@@ -1,52 +1,31 @@
-.flexDiv {
+.Centrer {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.flexDivImage {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.flexDivImage_old {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    scale: 0.5;
-}
-
-body{
+body {
     background-color: black;
 }
 
-h1, h2, text, span {
-    font-family:Verdana, Geneva, Tahoma, sans-serif;
+h1,
+h2,
+text,
+span, 
+label,
+a {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     text-align: center;
     color: white;
 }
 
-a {
-    font-family:Verdana, Geneva, Tahoma, sans-serif;
-    color:white;
-}
-
-.sousMessageFraisSup {
-    color: white;
-}
-
-.DivBoutonConnection {    
-    margin-top: 20px;
-    display: grid;
-    place-items: center;
-}
-
-.Neutre, .Benefice, .Perte {
+.Neutre,
+.Benefice,
+.Perte {
     font-family: 'Arial', sans-serif;
 }
 
-.Neutre { 
+.Neutre {
     color: grey;
 }
 
@@ -58,15 +37,17 @@ a {
     color: green;
 }
 
-.Benefice:hover{
-    color: lightgreen;
+.transac_divPositif:hover .Benefice,
+.cours_divPositif:hover .Benefice {
+    color: lightgreen !important; 
 }
 
 .Perte {
     color: darkred;
 }
 
-.Perte:hover {
+.transac_divNegatif:hover .Perte,
+.cours_divNegatif:hover .Perte {
     color: red;
 }
 
@@ -78,91 +59,90 @@ a {
     color: darkred;
 }
 
-.listeVenteScrollbar {
-    overflow-y: auto;
-    max-height: 50vh;
-    margin: 10px;
-    padding: 10px;
+.separateur-blanc {
+    border: none;
+    border-top: 1px solid white;
+    width: 80%;
+    margin: 0.5rem 0;
 }
 
-.vente_div {
-    display: flex;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 1px;
-    border-color: white;
-    margin-bottom: 10px;
-    padding: 5px;
-    position: relative;
-    width: 200px;
-    height: 50px;
-    gap :10px;
+button {
+  background: #222; /* fond légèrement gris foncé */
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
 }
 
-.vente_cours_surnom {
-    font-size: 12px;
+button:hover {
+  background: #111;
+  transform: translateY(-2px);
 }
 
-.vente_dateVente {
-    font-size: 12px;
+button:active {
+  background: #000;
+  transform: translateY(0);
 }
 
-.vente_gp {
-    position: absolute;
+.inputBox {
+  background: #222;
+  color: #fff;
+  padding: 6px 10px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  font-size: 13px;
+  transition: border-color 0.25s ease, background 0.25s ease;
 }
 
-.vente_div {
-    display: inline-block;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 1px;
-    border-color: white;
-    margin-bottom: 10px;
-    padding: 5px;
-    position: relative;
-    width: 200px;
-    height: 50px;
-    gap :10px;
-    justify-content: center;
-    align-items: center;
+.inputBox::placeholder {
+  color: #888;
+  font-size: 12px;
 }
 
-.vente_cours_surnom {
-    color: white;
-    position: absolute;
-    top: 5px;
-    left: 30px;
-    font-weight: bold;
+.inputBox:focus {
+  background: #333;
+  border-color: #fff;
+  outline: none;
 }
 
-.vente_gp {
-    position: absolute;
-    top: 0;
-    right: 5px;
-    font-size: 14px;
+.errorMessage {
+  background: #300;
+  color: #f88;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  border: 1px solid #600;
+  display: inline-block;
+}
+.footerBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #000;      /* opaque, plus transparent */
+  padding: 12px 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  border-top: 1px solid #444;
+  z-index: 9999;         /* empêche de cliquer à travers */
 }
 
-.vente_dateVente {
-    color: white;
-    position: absolute;
-    bottom: 2px;
-    right: 3px;
-    font-size: 12px;
+.footerBar button {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.25s ease;
 }
 
-.GrapheImage {
-    width: 60%;
-    height: 30%;
-}
-
-.radioLabel {
-    color: white;
-}
-
-.vente_effetLevier {
-    color: white;
-    position: absolute;
-    bottom: 0;
-    left: 5px;
-    font-size: 14px;
+.footerBar button:hover {
+  background: #333;
 }

@@ -23,29 +23,26 @@ class ConnectionController extends AbstractController {
     #[Route('/', name: 'connection_index', methods: ['GET'])]
     public function index (Request $request,ManagerRegistry $registry): Response
     {   
-        return $this->render('ConnectionVue.html.twig', [
-            'nom_utilisateur'=>''
-         ]);
+        return $this->render('ConnectionVue.html.twig');
     }
 
-    #[Route('/update-nom', name: 'update_nom', methods: ['POST'])]
-    public function updateNom(Request $request, SessionInterface $session, ManagerRegistry $doctrine): JsonResponse
+    #[Route('/VerifierDonneeConnexion', name: 'VerifierDonneeConnexion', methods: ['POST'])]
+    public function VerifierDonneeConnexion(Request $request, SessionInterface $session, ManagerRegistry $doctrine): JsonResponse
     {        
         $nom = $request->request->get('nom');
-
-        $regex = '/^[a-zA-Z]+$/'; //Vérifie si il n'y a pas de caractére spéciaux, nombre
-
-        if($nom == '' || !preg_match($regex,$nom)){
-            return new JsonResponse(['success' => false, 'message'=>'Le nom n\'est pas valide']);
-        }
+        $mdp = $request->request->get('mdp');
 
         $user = $this->trouverUtilisateurParNom($nom, $doctrine);
 
         if($user == null) {
-            return new JsonResponse(data: ['success' => false, 'message'=>'Cette utilisateur n\'existe pas']);
+            return new JsonResponse(data: ['success' => false, 'message'=>'Le nom d\'utilisateur ou le mot de passe est incorrecte']);
         }
 
-        $session->set('utilisateur', $user);
+        if(!password_verify($mdp,$user->getMdp())) {
+            return new JsonResponse(data: ['success' => false, 'message'=>'Le nom d\'utilisateur ou le mot de passe est incorrecte']);
+        }
+
+        $session->set('utilisateur', value: $user);
 
         return new JsonResponse(['success' => true, 'nom' => $nom]);
     }
@@ -60,6 +57,4 @@ class ConnectionController extends AbstractController {
         // Vérifier si un utilisateur a été trouvé
         return $utilisateur;
     }
-
-    
 }

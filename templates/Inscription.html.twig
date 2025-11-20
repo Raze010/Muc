@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<link rel="stylesheet" type="text/css" href="../style/Connection.css"/>
+
+	<div class="Centrer">
+		<h1>Muc inscription</h1>
+	</div>
+	<br>
+	<br>
+	<div class="Centrer">
+		<div>
+			<label>Nom :</label><br>
+			<input class="inputBox" type="text" id="input_nom">
+		</div>
+	</div>
+	<div class="Centrer">
+		<div>
+			<label>Adresse mail :</label><br>
+			<input class="inputBox" type="text" id="input_adresseMail">
+		</div>
+	</div>
+	<div class="Centrer">
+		<div>
+			<label>Mot de passe :</label><br>
+			<input class="inputBox" type="password" id="input_motDePasse">
+		</div>
+	</div>
+	<div class="Centrer">
+		<div>
+			<label>Confirmer mot de passe :</label><br>
+			<input class="inputBox" type="password" id="input_motDePasse2">
+		</div>
+	</div>
+	&nbsp
+	<div class="Centrer">
+
+		<a class="errorMessage" id="msgErreur" style="display:none;"></a>
+
+	</div>
+	<div class="BoutonConnection">
+		<button onclick="Inscription()">S'inscrire</button>
+	</div>
+</div>
+<script>
+	function AfficherMessageErreur (msgContent) {
+const msg = document.getElementById('msgErreur');
+	msg.textContent = msgContent;
+	msg.style.display = "inline-block"; //On fait apparaitre le message d'erreur
+	}
+
+	function Inscription() {
+const nom = document.getElementById('input_nom').value;
+const adresseMail = document.getElementById('input_adresseMail').value;
+const mdp = document.getElementById('input_motDePasse').value;
+const mdp2 = document.getElementById('input_motDePasse2').value;
+
+if (nom == "") {
+AfficherMessageErreur("Veuillez renseigner un nom");
+return;
+}
+
+if (adresseMail == "") {
+AfficherMessageErreur("Veuillez renseigner une adresse mail");
+return;
+}
+
+const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+if (! regex.test(adresseMail)) {
+AfficherMessageErreur("L'adresse mail renseigné n'est pas valide");
+return;
+}
+
+if (mdp == "") {
+AfficherMessageErreur("Le mot de passe ne peut pas être vide")
+return;
+}
+
+if (mdp.length < 8) {
+    AfficherMessageErreur("Le mot de passe doit contenir au moins 8 caractères");
+    return;
+}
+
+if (!/[A-Z]/.test(mdp)) {
+    AfficherMessageErreur("Le mot de passe doit contenir au moins une majuscule");
+    return;
+}
+
+if (!/[0-9]/.test(mdp)) {
+    AfficherMessageErreur("Le mot de passe doit contenir au moins un chiffre");
+    return;
+}
+
+if (!/[^A-Za-z0-9]/.test(mdp)) {
+    AfficherMessageErreur("Le mot de passe doit contenir au moins un caractère spécial");
+    return;
+}
+
+if (mdp != mdp2) {
+AfficherMessageErreur("Les mots de passe entrés sont différents")
+return;
+}
+
+const chemin = '{{ path('verifierAdresseMail') }}';
+
+fetch(chemin, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded'
+},
+body: new URLSearchParams(
+{'nom': nom, 'adresseMail': adresseMail, 'mdp': mdp}
+)
+}).then(response => response.json()).then(data => {
+if (data.success) {
+window.location.href = '{{ path('bienvenue') }}';
+} else {
+	AfficherMessageErreur(data.message);
+}
+});
+}
+</script>{% endblock %}

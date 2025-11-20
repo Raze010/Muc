@@ -45,7 +45,9 @@ export function Actualiser() {
     //fin courbe
 
     //Transaction
-    DessinerToutesLesTransaction();
+    if (controleur.donnee.ListeTransactionSelectionner == null || controleur.donnee.ListeTransactionSelectionner.length == 0) {
+        DessinerToutesLesTransaction();
+    }
     //fin transaction
 
     //Souris/Reticule
@@ -129,6 +131,22 @@ export function Actualiser() {
     //Fin dessin prix
 
     //fin souris
+
+    //DessinTransactionSelectionner
+
+    let listeTransactionSelectionner = controleur.donnee.ListeTransactionSelectionner;
+
+    if (listeTransactionSelectionner != null) {
+        for (let i = 0; i < listeVente.length; i++) {
+            let vente = listeVente[i];
+
+            if (listeTransactionSelectionner.includes(vente['idTransaction'])) {
+                DessinerTransaction(vente, true);
+            }
+        }
+    }
+
+    //Fin dessin transaction selectionner
 }
 
 function PosReticuleVenteSelectionner(listeVente) {
@@ -216,12 +234,6 @@ function DessinerEchelon() {
 function DessinerRecord(vente, Positif) {
     let couleur = couleurGris;
 
-    if (vente.gpTotale > 0) {
-        couleur = couleurVerte;
-    } else if (vente.gpTotale < 0) {
-        couleur = couleurRouge;
-    }
-
     let x = vente['graphe_x'];
     let y = vente['graphe_y'];
 
@@ -229,10 +241,30 @@ function DessinerRecord(vente, Positif) {
 
     let texte = "";
 
-    if (Positif) {
-        texte = "Record positif: +" + vente.gpTotale.toFixed(2) + " $";
+    if (controleur.donnee.ValeurAffichage == 'gp') {
+        if (Positif) {
+            texte = "Plus gros gain: +" + vente.gp.toFixed(2) + " $";
+        } else {
+            texte = "Plus grosse perte: " + vente.gp.toFixed(2) + " $";
+        }
+
+        if (vente.gp > 0) {
+            couleur = couleurVerte;
+        } else if (vente.gp < 0) {
+            couleur = couleurRouge;
+        }
     } else {
-        texte = "Record negatif: " + vente.gpTotale.toFixed(2) + " $";
+        if (Positif) {
+            texte = "Record positif: +" + vente.gpTotale.toFixed(2) + " $";
+        } else {
+            texte = "Record negatif: " + vente.gpTotale.toFixed(2) + " $";
+        }
+
+        if (vente.gpTotale > 0) {
+            couleur = couleurVerte;
+        } else if (vente.gpTotale < 0) {
+            couleur = couleurRouge;
+        }
     }
 
     let orientationVertical = 0;
@@ -252,6 +284,7 @@ function DessinerCourbe() {
     for (let i = 0; i < listeVente.length; i++) {
         let vente = listeVente[i];
 
+        let gp = vente.gp;
         let gpTotale = vente.gpTotale;
 
         const x = vente['graphe_x'];
@@ -259,12 +292,20 @@ function DessinerCourbe() {
 
         if (i != 0) {
             let couleur = couleurGris;
-
-            if (gpTotale < 0) {
-                couleur = couleurRouge;
+            if (controleur.donnee.ValeurAffichage == 'gp') {
+                if (gp < 0) {
+                    couleur = couleurRouge;
+                } else {
+                    couleur = couleurVerte;
+                }
             } else {
-                couleur = couleurVerte;
+                if (gpTotale < 0) {
+                    couleur = couleurRouge;
+                } else {
+                    couleur = couleurVerte;
+                }
             }
+
             DessinLigne(xAvant, yAvant, x, y, couleur);
         }
 
@@ -304,16 +345,21 @@ function DessinerTransaction(vente, estSelectionner) {
         taille = 3;
     }
 
-    if(estSelectionner) {
-        taille = 5;
+    if (estSelectionner) {
+        taille *= 1.5;
     }
 
     taille *= controleur.donnee.ScaleX * 0.8;
-    if(taille < 2){
+    if (taille < 2) {
         taille = 2;
     }
 
+    if (estSelectionner) {
+        DessinCercle(x, y, taille * 1.3, couleurBlanche);
+    }
+
     DessinCercle(x, y, taille, couleurTransaction);
+
 }
 
 //#region dessin
@@ -343,17 +389,17 @@ function DessinTexte(texte, x, y, couleur, taillePolice, orientationHorizontal, 
         y -= hauteurTexte + 5;
     }
 
-    if(x > controleur.donnee.Largeur){
+    if (x > controleur.donnee.Largeur) {
         x = controleur.donnee.Largeur;
-    } 
-    if(x < 0) {
+    }
+    if (x < 0) {
         x = 0;
     }
 
-    if(y > controleur.donnee.Hauteur){
+    if (y > controleur.donnee.Hauteur) {
         y = controleur.donnee.Hauteur;
     }
-    if(y < 0) {
+    if (y < 0) {
         y = 0;
     }
 

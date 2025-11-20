@@ -46,7 +46,13 @@ export function DefinirCoordonneXYListeVente() {
         ListeVente[i]['graphe_x'] = x + controleur.donnee.DeplacementXPixel;
 
         //Y
-        ListeVente[i]['graphe_y'] = ObtenirYSelonPrix(ListeVente[i]['gpTotale']);
+        let prix = 0;
+        if (controleur.donnee.ValeurAffichage == "gp") {
+            prix = ListeVente[i]['gp'];
+        } else {
+             prix = ListeVente[i]['gpTotale'];
+        }
+        ListeVente[i]['graphe_y'] = ObtenirYSelonPrix(prix);
     }
 }
 

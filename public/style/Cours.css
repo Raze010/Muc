@@ -1,0 +1,89 @@
+.cours_divPositif,
+.cours_divNegatif {
+    display: flex;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 1px;
+    border-color: white;
+    margin-bottom: 10px;
+    padding: 5px;
+    position: relative;
+    width: 200px;
+    height: 50px;
+    gap: 10px;
+}
+
+.cours_divPositif {
+    border-color: green;
+}
+
+.cours_divPositif:hover {
+    background-color: green;
+}
+
+.cours_divNegatif{    
+    border-color: red;
+}
+
+.cours_divNegatif:hover {
+    background-color: darkred;
+}
+
+.listeCours {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* Ajouté pour centrer les éléments dans .listeCours */
+    gap: 1rem;
+    /* Corrigé : "gap: 1" est invalide, il faut une unité (rem, px, etc.) */
+    max-width: 800px;
+    /* Optionnel : limite la largeur si tu veux un centrage plus visible */
+}
+
+.cours_cours_surnom {
+    color: white;
+    position: absolute;
+    top: 5px;
+    left: 30px;
+    font-weight: bold;
+}
+
+.cours_gp {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    font-size: 14px;
+}
+
+.cours_pourcentage,
+.cours_pourcentage_positif,
+.cours_pourcentage_negatif {
+    position: absolute;
+    bottom: 0;
+    right: 5px;
+    font-size: 14px;
+}
+
+.cours_pourcentage_positif {
+    color: green;
+}
+
+.cours_divPositif:hover .cours_pourcentage_positif{
+    color: lightgreen;
+}
+
+.cours_pourcentage_negatif {
+    color: darkred;
+}
+
+.cours_divNegatif:hover .cours_pourcentage_negatif{
+    color: red;
+}
+
+.cours_nbTransaction {
+    position: absolute;
+    border: 0;
+    bottom: 0;
+    left: 5px;
+    font-size: 14px;
+}

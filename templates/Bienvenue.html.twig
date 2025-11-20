@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+	<link rel="stylesheet" type="text/css" href="../style/Bvn.css"/>
+	<link rel="stylesheet" type="text/css" href="../style/Vente.css"/>
+	<link rel="stylesheet" type="text/css" href="../style/Cours.css"/>
+
 	<link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
 
 	<h2 class="{{sousMessageClasse}}" onclick="window.location.href='{{ path('ReinitMessageBvn') }}'">{{sousMessage}}</h2>
@@ -10,37 +14,50 @@
 		CreerTexteArgent("GrosseFluctuation", {{ sommeTotale }}, 54);
 	</script>
 
-	<div class='flexDivImage'>
+	<div class='Centrer'>
 		<canvas id="grapheJS" class="GrapheImage"></canvas>
 	</div>
 
+	{% if FiltreCours != "" %}
+		<br>
+		<div class="Centrer">
+			<button type="button" onclick="RechargerPage('reinit')">
+				Rénitialiser les filtres
+			</button>
+		</div>
+	{% endif %}
+
 	<br>
-	<div class='flexDivImage'>
-		<select name="modeAffichage" id='modeAffichageSelect' onchange="RechargerPage()">
+	<div class='Centrer'>
+		<select name="modeAffichage" id='modeAffichageSelect' onchange="RechargerPage('')">
 			<option value="transaction">Par transaction</option>
 			<option value="jour">Par jour</option>
 			<option value="mois">Par mois</option>
 			<option value="an">Par an</option>
 		</select>
+		<select name="ValeurAffichage" id='ValeurAffichageSelect' onchange="RechargerPage('')">
+			<option value="gpTotale">Bilan</option>
+			<option value="gp">transaction singulière</option>
+		</select>
 	</div>
 
 	<br>
-	<div class='flexDivImage'>
-		<input type="radio" name="modeDate" value="reel" onclick="RechargerPage()"/>
+	<div class='Centrer'>
+		<input type="radio" name="modeDate" value="reel" onclick="RechargerPage('')"/>
 		<label for="radio_reel" class='radioLabel'>Reel</label>
-		<input id="radio_distinct" type="radio" name="modeDate" value="distinct" onclick="RechargerPage()"/>
+		<input id="radio_distinct" type="radio" name="modeDate" value="distinct" onclick="RechargerPage('')"/>
 		<label for="radio_distinct" class='radioLabel'>Distinct</label>
 	</div>
 
 	<br>
-	<div class='flexDivImage'>
-		<input type="radio" name="modeGp" value="gain" onclick="RechargerPage()"/>
+	<div class='Centrer'>
+		<input type="radio" name="modeGp" value="gain" onclick="RechargerPage('')"/>
 		<label for="radio_gain" class='radioLabel'>Gain</label>
 
-		<input type="radio" name="modeGp" value="tout" onclick="RechargerPage()"/>
+		<input type="radio" name="modeGp" value="tout" onclick="RechargerPage('')"/>
 		<label for="radio_tout" class='radioLabel'>Gain + Perte</label>
 
-		<input id="radio_perte" type="radio" name="modeGp" value="perte" onclick="RechargerPage()"/>
+		<input id="radio_perte" type="radio" name="modeGp" value="perte" onclick="RechargerPage('')"/>
 		<label for="radio_perte" class='radioLabel'>Perte</label>
 	</div>
 
@@ -53,12 +70,17 @@ const height = window.innerHeight * 0.3 * scale;
 
 const urlParams = new URLSearchParams(window.location.search);
 const modeDate = urlParams.get('modeDate') || 'reel'; // Valeur par défaut : 'reel'
-const modeAffichage = urlParams.get('modeAffichage') || 'transaction'; // Valeur par défaut : 'reel'
-const modeGP = urlParams.get('modeGP') || 'tout'; // Valeur par défaut : 'reel'
+const modeAffichage = urlParams.get('modeAffichage') || 'transaction';
+const modeGP = urlParams.get('modeGP') || 'tout';
+const ValeurAffichage = urlParams.get('valeurAffichage') || 'gpTotale'; 
+
+document.getElementById('ValeurAffichageSelect').value = ValeurAffichage;
+
+window.ValeurAffichage = ValeurAffichage;
 
 window.modeDate = modeDate;
 
-let radio = document.querySelector (`input[name="modeDate"][value="${modeDate}"]`);
+radio = document.querySelector (`input[name="modeDate"][value="${modeDate}"]`);
 if (radio) {
 radio.checked = true;
 }
@@ -71,9 +93,15 @@ radio.checked = true;
 document.getElementById('modeAffichageSelect').value = modeAffichage;
 });
 window.listeVente = {{ listeVenteJS|json_encode|raw }}
-window.listeCours = {{ listeCoursJS|json_encode|raw }}
 
-function RechargerPage() {
+function RechargerPage(surnomCours) {
+if (surnomCours == "") {
+surnomCours = "{{ FiltreCours }}";
+} else if (surnomCours == "reinit") {
+surnomCours = "";
+}
+const valeurAffichageSelect = document.getElementById('ValeurAffichageSelect').value;
+
 const modeAffichageSelect = document.getElementById('modeAffichageSelect').value;
 
 let modeDateRadio = "reel";
@@ -94,35 +122,142 @@ break;
 }
 }
 
-window.location.href = `?modeDate=${modeDateRadio}&modeAffichage=${modeAffichageSelect}&modeGP=${modeGPRadio}`;
+window.location.href = `?modeDate=${modeDateRadio}&modeAffichage=${modeAffichageSelect}&modeGP=${modeGPRadio}&cours=${surnomCours}&valeurAffichage=${valeurAffichageSelect}`;
 }
 	</script>
 	<script type="module" src="{{ asset('js/GraphiqueJS/Graphique_controleur.js') }}"></script>
 
 	<br>
 
-	<div class='flexDiv'>
+	<div class='Centrer'>
 		<span>{{Description}}</span>
 	</div>
 
-	<div class='flexDiv'>
+	<br>
+
+	<div class='Centrer'>
+		<div class='listeCours'>
+			{% for cours in listeCours %}
+
+				{% if cours.EstUnGain %}
+					{% set classDiv = 'cours_divPositif' %}
+				{% else %}
+					{% set classDiv = 'cours_divNegatif' %}
+				{% endif %}
+
+				{% set surnomCours = cours.coursPHP.getSurnom() %}
+				{% set surnomCours_div = cours.coursPHP.getSurnom() ~ "_div" %}
+				{% set surnomCours_gp = cours.coursPHP.getSurnom() ~ "_gp" %}
+
+				<div id='{{surnomCours_div}}' class='{{classDiv}}'>
+					<img style="max-width:20px; max-height:20px;" src="{{ path('imageCours', { id: cours.coursPHP.getId }) }}">
+					<span class='cours_cours_surnom'>
+						{{cours.coursPHP.getSurnom}}
+					</span>
+					<span id='{{ cours.coursPHP.getSurnom }}' class='cours_gp'></span>
+					
+				{% if cours.nbTransactionPos == 0 %}
+<span class="cours_nbTransaction">
+    <span style="color: darkred;">x{{ cours.nbTransaction }}</span>
+</span>					
+				{% elseif cours.nbTransactionNeg == 0 %}
+<span class="cours_nbTransaction">
+    <span style="color: green;">x{{ cours.nbTransaction }}</span>
+</span>
+				{% else %} 
+<span class="cours_nbTransaction">
+    x{{ cours.nbTransaction }}
+    (
+        <span style="color: green;">{{ cours.nbTransactionPos }}</span> /
+        <span style="color: darkred;">{{ cours.nbTransactionNeg }}</span>
+    )
+</span>
+				{% endif %}
+					{% if cours.EstUnGain %}
+						<span class='cours_pourcentage_positif'>{{cours.pourcentage}}
+							%</span>
+					{% else %}
+						<span class='cours_pourcentage_negatif'>{{cours.pourcentage}}
+							%</span>
+					{% endif %}
+
+					<script>
+						CreerTexteArgent('{{ cours.coursPHP.getSurnom }}', {{ cours.gpTotale }}, 20);
+
+document.getElementById("{{ surnomCours_div }}").addEventListener("mousedown", () => {
+RechargerPage("{{ surnomCours }}");
+});
+
+
+document.getElementById("{{ surnomCours_div }}").addEventListener("mouseenter", () => {
+if (window.ListeTransactionSelectionner == null) {
+window.ListeTransactionSelectionner = [];
+}
+window.ListeTransactionSelectionner.push(...{{ cours.ListeIdTransaction|json_encode|raw }});
+});
+
+document.getElementById("{{ surnomCours_div }}").addEventListener("mouseleave", () => {
+window.ListeTransactionSelectionner = []
+
+});
+					</script>
+				</div>
+				<br>
+			{% endfor %}
+		</div>
+	</div>
+	<div class='Centrer'>
+		<hr class="separateur-blanc">
+	</div>
+	<div class='Centrer'>
 		<div class='listeVenteScrollbar'>
 			{% for vente in listeVente %}
-				<div class='vente_div'>
+				{% if vente.getGP > 0 %}
+					{% set classDiv = 'transac_divPositif' %}
+				{% else %}
+					{% set classDiv = 'transac_divNegatif' %}
+				{% endif %}
+
+
+				{% set idTransaction = vente.getIdTransaction() %}
+				{% set idTransaction_div = vente.getIdTransaction() ~ "_div" %}
+				{% set idTransaction_gp = vente.getIdTransaction() ~ "_gp" %}
+
+				<div id='{{idTransaction_div }}' class='{{classDiv}}'>
 					<img style="max-width:20px; max-height:20px;" src="{{ path('imageCours', { id: vente.getCours.getId }) }}">
-					<span class='vente_cours_surnom'>
-						{{vente.getCours.getSurnom}}
-					</span>
-					<span id='{{ vente.getIdTransaction }}' class='vente_gp'></span>
+
+					<span id='{{ idTransaction_gp }}' class='vente_gp'></span>
 
 					{% if vente.getEffetLevier > 1 %}
-						<span class='vente_effetLevier'>x{{ vente.getEffetLevier }}</span>
+						<span class='vente_Titre'>
+							{{vente.getCours.getSurnom}}
+							x{{ vente.getEffetLevier }}
+						</span>
+					{% else %}
+						<span class='vente_Titre'>
+							{{vente.getCours.getSurnom}}
+						</span>
 					{% endif %}
 
 					<span class='vente_dateVente'>{{ vente.getDateVente|date('d/m/Y') }}</span>
 
 					<script>
-						CreerTexteArgent('{{ vente.getIdTransaction }}', {{ vente.getGP }}, 20);
+						window.addEventListener("DOMContentLoaded", () => {
+CreerTexteArgent('{{ idTransaction_gp }}', {{ vente.getGP }}, 20);
+
+document.getElementById("{{ idTransaction_div }}").addEventListener("mouseenter", () => {
+if (window.ListeTransactionSelectionner == null) {
+window.ListeTransactionSelectionner = [];
+}
+window.ListeTransactionSelectionner.push("{{ idTransaction }}");
+});
+
+document.getElementById("{{ idTransaction_div }}").addEventListener("mouseleave", () => {
+if (window.ListeTransactionSelectionner.includes('{{ idTransaction }}')) {
+window.ListeTransactionSelectionner = window.ListeTransactionSelectionner.filter(item => item != "{{ idTransaction }}")
+}
+});
+});
 					</script>
 				</div>
 				<br>
@@ -130,14 +265,15 @@ window.location.href = `?modeDate=${modeDateRadio}&modeAffichage=${modeAffichage
 		</div>
 	</div>
 
-	<div class="flexDiv">
-		<span class='sousMessageFraisSup'>
+	<br>
+	<div class="Centrer">
+			<span>
 			sans inclure des frais de
 			{{ fraisSup }}
 			$</span>
 	</div>
 	<br>
-	<div class="flexDiv">
+	<div class="Centrer">
 		<form id="etoroForm" action="{{ path('importerTransactionEtoro') }}" method="post" enctype="multipart/form-data" style="display: none;">
 			<input type="file" name="fichier_etoro" id="fichierEtoroInput" onchange="document.getElementById('etoroForm').submit();">
 		</form>

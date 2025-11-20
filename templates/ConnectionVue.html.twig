@@ -1,42 +1,61 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+	<link rel="stylesheet" type="text/css" href="../style/Connection.css"/>
 
-	<div class="flexDiv">
+	<div class="Centrer">
 		<div>
 			<h1>Muc</h1>
-			<a>Nom :</a>
-			<input type="text" id="monInput" value="{{ nom_utilisateur }}">
-
-			<div class="DivBoutonConnection">
-				<button onclick="Connection()">Se connecter</button>
+			<div>
+				<label for="input_nom">Nom :</label><br>
+				<input class="inputBox" type="text" id="input_nom">
+			</div>
+			<div>
+				<label for="input_mdp">Mot de passe :</label><br>
+				<input class="inputBox" type="password" id="input_mdp">
 			</div>
 		</div>
 	</div>
+		&nbsp<div class="Centrer">
 
+		<a class="errorMessage" id="msgErreur" style="display:none;"></a>
+
+	</div>
+	<div class="BoutonConnection">
+		<button onclick="Connection()">Se connecter</button>
+		&nbsp;
+		<button onclick="Inscription()">S'inscrire</button>
+	</div>
 	<script>
+
 		function Connection() {
-            const nom = document.getElementById('monInput').value;
+const nom = document.getElementById('input_nom').value;
+const mdp = document.getElementById('input_mdp').value;
 
-            const chemin = '{{ path('update_nom') }}';
+const chemin = '{{ path('VerifierDonneeConnexion') }}';
 
-            fetch(chemin, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams(
-            {'nom': nom}
-            )
-            }).then(response => response.json()).then(data => {
-            if (data.success) {
-            window.location.href = '{{ path('bienvenue') }}';
-            } else {
-            alert(data.message);
-            }
-            });
+fetch(chemin, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded'
+},
+body: new URLSearchParams(
+{'nom': nom, 'mdp': mdp}
+)
+}).then(response => response.json()).then(data => {
+if (data.success) {
+window.location.href = '{{ path('bienvenue') }}';
+} else {
+	const msg = document.getElementById('msgErreur');
+	msg.textContent = data.message;
+	msg.style.display = "inline-block"; //On fait apparaitre le message d'erreur
+	} 
+});
+}
 
-            }
+function Inscription() {
+window.location.href = '{{ path('inscription') }}';
+}
 	</script>
 
 {% endblock %}

@@ -1,0 +1,63 @@
+
+.transac_divPositif,
+.transac_divNegatif {
+    display: inline-block;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 1px;
+    margin-bottom: 10px;
+    padding: 5px;
+    position: relative;
+    width: 400px;
+    height: 25px;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.transac_divPositif {
+    border-color: green;
+}
+
+.transac_divPositif:hover {
+    background-color: green;
+}
+
+.transac_divNegatif{    
+    border-color: red;
+}
+
+.transac_divNegatif:hover {
+    background-color: darkred;
+}
+
+.listeVenteScrollbar {
+    overflow-y: auto;
+    max-height: 50vh;
+    margin: 10px;
+    padding: 10px;
+}
+
+.vente_Titre {
+    color: white;
+    position: absolute;
+    top: 5px;
+    left: 30px;
+    font-weight: bold;
+}
+
+.vente_gp {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    font-size: 14px;
+}
+
+.vente_dateVente {
+    color: white;
+    position: absolute;
+    bottom: 0px;
+    right: 3px;
+    font-size: 9px;
+    color: gray;
+}

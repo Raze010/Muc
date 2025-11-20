@@ -31,6 +31,7 @@ class BienvenueController extends AbstractController
         $utilisateur = $session->get('utilisateur', );
         $listeVente = $repository->TrouverVente($utilisateur);
 
+        $filtreCours = $request->query->get('cours', '');
         $modeGP = $request->query->get('modeGP', 'tout');
         $modeAffichage = $request->query->get('modeAffichage', 'transaction');
         $modeDate = $session->get('modeDate'); //REEL, IDENTIQUE
@@ -38,6 +39,7 @@ class BienvenueController extends AbstractController
         $transactionHelper = new TransactionHelper();
         $transactionHelper->modeAffichage = $modeAffichage;
         $transactionHelper->modeGP = $modeGP;
+        $transactionHelper->cours = $filtreCours;
 
         $description = "Toutes les transactions";
 
@@ -55,9 +57,7 @@ class BienvenueController extends AbstractController
         $sousMessage = $session->get('bvn_message');
         $sousMessageClasse = $session->get('bvn_message_couleur');
 
-        $sommeTotaleAvecFrais = $sommeTotale - $utilisateur->getFrais();
-
-        $listeCoursJS = $transactionHelper->ObtenirListeCours_JS($listeVente,$sommeTotale);
+        $listeCours = $transactionHelper->ObtenirListeCours($listeVente);
 
         return $this->render('Bienvenue.html.twig', [
             'nom' => $utilisateur->getNom(),
@@ -66,11 +66,12 @@ class BienvenueController extends AbstractController
             'sousMessageClasse' => $sousMessageClasse,
             'listeVente' => $listeVente,
             'listeVenteJS' => $listeVenteJS,
-            'listeCoursJS'=>$listeCoursJS,
-            'fraisSup' => $utilisateur->getFrais(),
-            'sommeTotaleAvecFrais' => $sommeTotaleAvecFrais,
+            'listeCours'=>$listeCours,
+            'fraisSup' => 0,
+            'sommeTotaleAvecFrais' => $sommeTotale,
             'modeDate' => $modeDate,
-            'Description'=> $description
+            'Description'=> $description,
+            'FiltreCours' => $filtreCours
         ]);
     }
 

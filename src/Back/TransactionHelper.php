@@ -22,8 +22,7 @@ use App\Entity\Utilisateur;
 
 class TransactionHelper
 {
-
-    public $modeGP, $modeAffichage;
+    public $modeGP, $modeAffichage, $cours;
 
     public function FiltrerListeVente($listeVente)
     {
@@ -38,6 +37,12 @@ class TransactionHelper
                 continue;
             }
 
+            if ($this->cours != "") {
+                if ($vente->getCours()->getSurnom() != $this->cours) {
+                    continue;
+                }
+            }
+
             $listeVenteFiltrer[] = $vente;
         }
 
@@ -49,6 +54,10 @@ class TransactionHelper
         usort($listeVente, function (Vente $a, Vente $b) {
             return $a->getDateVente() <=> $b->getDateVente();
         });
+
+        if(count($listeVente) == 0) {
+            return $listeVente;
+        }
 
         $premiereTransaction = $listeVente[0];
 
@@ -65,6 +74,7 @@ class TransactionHelper
         }
 
         $objetActu = [
+            'idTransaction' => 0,
             'ordre' => 0,
             'gp' => 0,
             'gpTotale' => 0,
@@ -94,6 +104,7 @@ class TransactionHelper
             $copieDate = clone $vente->getDateVente();
 
             if ($this->modeAffichage == "transaction") {
+                $objetActu["idTransaction"] = $vente->getIdTransaction();
                 $objetActu["gpTotale"] += $gp;
                 $objetActu["gp"] += $gp;
                 $objetActu["date"] = $copieDate->format(DateTime::ATOM);
@@ -179,7 +190,7 @@ class TransactionHelper
         return $listeVenteJS;
     }
 
-    public function ObtenirListeCours_JS($listeVente, $sommeTotale)
+    public function ObtenirListeCours($listeVente)
     {
         $listeCours = [];
 
@@ -187,6 +198,8 @@ class TransactionHelper
         //     'nomCours' => "",
         //     'gpTotale' => 0,
         //     'nbTransaction' => 0,
+        //     'nbTransactionPos => 0,
+        //     'nbTransactionNeg => 0,
         //     'pourcentage' => 0,
         //     'EstUnGain' => 0
         // ];
@@ -196,25 +209,67 @@ class TransactionHelper
 
             $cours_surnom = $cours->getSurnom();
 
-            $coursJS = null;
+            $coursTab = null;
 
             if (array_key_exists($cours_surnom, $listeCours)) {
-                $coursJS = $listeCours[$cours_surnom];
+                $coursTab = $listeCours[$cours_surnom];
             } else {
-                $coursJS = [
-                    'nomCours'=>$cours_surnom,
-                    'gpTotale'=>0,
-                    'nbTransaction'=>0,
-                    'pourcentage'=>0,
-                    'EstUnGain'=>0  
+                $coursTab = [
+                    'coursPHP' => $cours,
+                    'nomCours' => $cours_surnom,
+                    'gpTotale' => 0,
+                    'nbTransaction' => 0,
+                    'nbTransactionPos' => 0,
+                    'nbTransactionNeg' => 0,
+                    'pourcentage' => 0,
+                    'EstUnGain' => 0,
+                    'ListeIdTransaction' => []
                 ];
             }
 
-            $coursJS['gpTotale'] += $vente->getGP();
-            $coursJS['nbTransaction'] += 1;      
+            $gp = $vente->getGP();
 
-            $listeCours[$cours_surnom] = $coursJS;
+            $coursTab['gpTotale'] += $gp;
+            $coursTab['nbTransaction'] += 1;
+            if($gp >= 0) {
+                $coursTab['nbTransactionPos'] += 1;
+            } else {
+                $coursTab['nbTransactionNeg'] += 1;
+            }
+
+            $coursTab['ListeIdTransaction'][] = $vente->getIdTransaction();
+
+            $gain = $coursTab['gpTotale'] > 0;
+
+            $coursTab['EstUnGain'] = $gain;
+
+            $listeCours[$cours_surnom] = $coursTab;
         }
+
+        $gainCumuler = 0;
+        $perteCumuler = 0;
+
+        foreach ($listeCours as $cours) {
+            if ($cours['EstUnGain']) {
+                $gainCumuler += $cours['gpTotale'];
+            } else {
+                $perteCumuler -= $cours['gpTotale'];
+            }
+        }
+
+        foreach ($listeCours as $cours) {
+            if ($cours['EstUnGain']) {
+                $cours['pourcentage'] = round($cours['gpTotale'] / $gainCumuler * 100);
+            } else {
+                $cours['pourcentage'] = -round($cours['gpTotale'] / $perteCumuler * 100);
+            }
+
+            $listeCours[$cours['coursPHP']->getSurnom()] = $cours;
+        }
+
+        usort($listeCours, function ($a, $b) {
+            return $b['gpTotale'] <=> $a['gpTotale'];
+        });
 
         return $listeCours;
     }
