@@ -314,8 +314,6 @@ function DessinerCourbe() {
     }
 }
 
-let a = true;
-
 function DessinerToutesLesTransaction() {
     for (let i = 0; i < listeVente.length; i++) {
         let vente = listeVente[i];

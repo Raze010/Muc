@@ -26,15 +26,19 @@ class BienvenueController extends AbstractController
     #[Route('/bvn', name: 'bienvenue', methods: ['GET'])]
     public function index(Request $request, SessionInterface $session, ManagerRegistry $doctrine): Response
     {
-        $repository = $doctrine->getRepository(Vente::class);
+        $utilisateur = $this->getUser();
 
-        $utilisateur = $session->get('utilisateur', );
+        if (!$utilisateur || !method_exists($utilisateur, 'getNom')) {
+            throw $this->createAccessDeniedException('Accès non autorisé');
+        }
+
+        $repository = $doctrine->getRepository(Vente::class);
         $listeVente = $repository->TrouverVente($utilisateur);
 
         $filtreCours = $request->query->get('cours', '');
         $modeGP = $request->query->get('modeGP', 'tout');
         $modeAffichage = $request->query->get('modeAffichage', 'transaction');
-        $modeDate = $session->get('modeDate'); //REEL, IDENTIQUE
+        $modeDate = $request->getSession()->get('modeDate');
 
         $transactionHelper = new TransactionHelper();
         $transactionHelper->modeAffichage = $modeAffichage;
@@ -43,9 +47,9 @@ class BienvenueController extends AbstractController
 
         $description = "Toutes les transactions";
 
-        if($modeGP == "gain") {
+        if ($modeGP === "gain") {
             $description = "Tous les gains";
-        } else if ($modeGP == "perte") {
+        } elseif ($modeGP === "perte") {
             $description = "Toutes les pertes";
         }
 
@@ -54,8 +58,8 @@ class BienvenueController extends AbstractController
 
         $sommeTotale = Calcul::getGpTotale($listeVente);
 
-        $sousMessage = $session->get('bvn_message');
-        $sousMessageClasse = $session->get('bvn_message_couleur');
+        $sousMessage = $request->getSession()->get('bvn_message');
+        $sousMessageClasse = $request->getSession()->get('bvn_message_couleur');
 
         $listeCours = $transactionHelper->ObtenirListeCours($listeVente);
 
@@ -66,13 +70,14 @@ class BienvenueController extends AbstractController
             'sousMessageClasse' => $sousMessageClasse,
             'listeVente' => $listeVente,
             'listeVenteJS' => $listeVenteJS,
-            'listeCours'=>$listeCours,
+            'listeCours' => $listeCours,
             'fraisSup' => 0,
             'sommeTotaleAvecFrais' => $sommeTotale,
             'modeDate' => $modeDate,
-            'Description'=> $description,
+            'Description' => $description,
             'FiltreCours' => $filtreCours
         ]);
+
     }
 
     #[Route('/importerTransactionEtoro', name: 'importerTransactionEtoro', methods: ['POST'])]

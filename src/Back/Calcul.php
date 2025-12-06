@@ -21,8 +21,8 @@ class Calcul
 
     public static function getMaxMin($listeVente)
     {
-        $plusGrand = -10000000000000000;
-        $plusPetit = 10000000000000000;
+        $plusGrand = PHP_FLOAT_MAX;
+        $plusPetit = PHP_FLOAT_MIN;
 
         for ($i = 0; $i < count($listeVente); $i++) {
             $vente = $listeVente[$i];
